@@ -1,0 +1,38 @@
+name: Deploy PMO Virtual Interview
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install Dependencies
+      run: npm ci
+    
+    - name: Run Tests
+      run: npm test
+    
+    - name: Build Project
+      run: npm run build
+    
+    - name: Docker Build
+      run: docker build -t pmo-virtual-interview .
+    
+    - name: Deploy to Production
+      if: github.ref == 'refs/heads/main'
+      run: |
+        # Add your deployment script here
+        # Could be SSH, Docker push, Kubernetes deployment, etc.
+        echo "Deploying to production..."
